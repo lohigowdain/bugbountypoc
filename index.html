@@ -124,8 +124,10 @@
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Origin': 'https://bughunters.fun'
+                            'Accept': 'application/json'
                         },
+                        mode: 'cors',
+                        credentials: 'omit',
                         body: JSON.stringify(data)
                     });
                     

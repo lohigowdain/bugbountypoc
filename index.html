@@ -54,7 +54,9 @@
                 const response = await fetch(API_ENDPOINT, {
                     method: 'GET',
                     headers: {
-                        'x-recaptcha-token': token
+                        'Origin': 'https://bughunters.fun',
+                        'x-recaptcha-token': token,
+                        'Content-Type': 'application/json'
                     },
                     mode: 'cors'
                 });

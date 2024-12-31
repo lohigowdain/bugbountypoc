@@ -5,25 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bug Hunters - Security Vulnerability Report</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        window.recaptchaLoaded = false;
-        window.onRecaptchaError = function() {
-            console.error('reCAPTCHA failed to load');
-            document.getElementById('loadingIndicator').innerHTML = 
-                '<div class="text-red-600">reCAPTCHA failed to load. Please check your internet connection.</div>';
-        };
-    </script>
-    <script src="https://www.google.com/recaptcha/api.js?render=6LfSaKoqAAAAAPBwrzOqoXWzih0b1hUT2z_j48Hr" 
-            onload="window.recaptchaLoaded = true;" 
-            onerror="window.onRecaptchaError()">
-    </script>
 </head>
 <body class="bg-gray-100">
     <div class="container mx-auto px-4 py-8">
         <h1 class="text-3xl font-bold text-center mb-8">Bug Hunters Platform</h1>
         <div id="securityBugReport"></div>
         <div id="loadingIndicator" class="text-center text-gray-600">
-            Loading form...
+            <div class="animate-pulse">Loading form...</div>
         </div>
     </div>
 
@@ -31,12 +19,13 @@
         async function loadBugReportForm() {
             const loadingIndicator = document.getElementById('loadingIndicator');
             const formContainer = document.getElementById('securityBugReport');
+            const API_ENDPOINT = 'https://3beyl53jrj.execute-api.us-east-1.amazonaws.com/prod/bug-report';
             
             try {
-                const response = await fetch('https://bughunters.fun/api/get-form', {
+                const response = await fetch(API_ENDPOINT, {
                     method: 'GET',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Accept': 'text/html'
                     }
                 });
                 
@@ -44,21 +33,8 @@
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
-                const data = await response.text();
-                
-                if (data.includes('error')) {
-                    // Check if response is a JSON error message
-                    try {
-                        const errorData = JSON.parse(data);
-                        if (errorData.error) {
-                            throw new Error(errorData.error);
-                        }
-                    } catch (e) {
-                        // If not JSON or other error, continue with the data
-                    }
-                }
-                
-                formContainer.innerHTML = data;
+                const html = await response.text();
+                formContainer.innerHTML = html;
                 loadingIndicator.style.display = 'none';
                 
             } catch (error) {

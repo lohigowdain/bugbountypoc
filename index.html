@@ -5,27 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bug Hunters - Security Vulnerability Report</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://www.google.com/recaptcha/api.js?render=6LcwUaoqAAAAAKripfytin08sXbLKHz0PpjzjoKN"></script>
+    <script src="https://www.google.com/recaptcha/api.js?render=YOUR_NEW_SITE_KEY"></script>
 </head>
 <body class="bg-gray-100">
     <div class="container mx-auto px-4 py-8">
         <h1 class="text-3xl font-bold text-center mb-8">Bug Hunters Platform</h1>
         <div id="securityBugReport"></div>
+        <div id="loadingIndicator" class="text-center text-gray-600">
+            Loading form...
+        </div>
     </div>
 
     <script>
-        const RECAPTCHA_SITE_KEY = '6LcwUaoqAAAAAKripfytin08sXbLKHz0PpjzjoKN';
+        const RECAPTCHA_SITE_KEY = 'YOUR_NEW_SITE_KEY';
         const API_ENDPOINT = 'https://r81g4et74f.execute-api.us-east-1.amazonaws.com/prod/bug-report';
 
         async function loadBugReportForm() {
+            const loadingIndicator = document.getElementById('loadingIndicator');
             try {
-                const token = await new Promise((resolve, reject) => {
-                    grecaptcha.ready(() => {
-                        grecaptcha.execute(RECAPTCHA_SITE_KEY, {action: 'load_form'})
-                            .then(resolve)
-                            .catch(reject);
-                    });
-                });
+                loadingIndicator.style.display = 'block';
+                
+                await new Promise(resolve => grecaptcha.ready(resolve));
+                const token = await grecaptcha.execute(RECAPTCHA_SITE_KEY, {action: 'load_form'});
                 
                 const response = await fetch(API_ENDPOINT, {
                     method: 'GET',
@@ -36,11 +37,12 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error('Failed to load form');
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
                 const html = await response.text();
                 document.getElementById('securityBugReport').innerHTML = html;
+                loadingIndicator.style.display = 'none';
 
                 // Add form submission handler
                 const form = document.getElementById('bugReportForm');
@@ -82,9 +84,12 @@
                     });
                 }
             } catch (error) {
-                console.error('Error loading form:', error);
+                console.error('Error:', error);
+                loadingIndicator.style.display = 'none';
                 document.getElementById('securityBugReport').innerHTML = 
-                    '<div class="text-red-600 text-center">Failed to load the security report form. Please try again later.</div>';
+                    `<div class="text-red-600 text-center">
+                        Failed to load form: ${error.message}
+                    </div>`;
             }
         }
 

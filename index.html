@@ -22,18 +22,28 @@
             const API_ENDPOINT = 'https://3beyl53jrj.execute-api.us-east-1.amazonaws.com/prod/bug-report';
             
             try {
+                console.log('Fetching form from:', API_ENDPOINT);
                 const response = await fetch(API_ENDPOINT, {
                     method: 'GET',
                     headers: {
-                        'Accept': 'text/html'
-                    }
+                        'Accept': 'text/html',
+                        'Origin': 'https://bughunters.fun'
+                    },
+                    mode: 'cors'
                 });
                 
+                console.log('Response status:', response.status);
+                console.log('Response headers:', [...response.headers.entries()]);
+                
                 if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Error response:', errorText);
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
                 const html = await response.text();
+                console.log('Received HTML length:', html.length);
+                
                 formContainer.innerHTML = html;
                 loadingIndicator.style.display = 'none';
                 
@@ -41,13 +51,10 @@
                 console.error('Error loading form:', error);
                 loadingIndicator.innerHTML = `
                     <div class="text-red-600">
-                        Failed to load the form. Please try again later.<br>
-                        Error: ${error.message}
+                        <p class="font-bold">Access Denied</p>
+                        <p>This form can only be accessed from https://bughunters.fun</p>
+                        <p class="text-sm mt-2">Error: ${error.message}</p>
                     </div>
-                    <button onclick="loadBugReportForm()" 
-                            class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                        Retry
-                    </button>
                 `;
             }
         }

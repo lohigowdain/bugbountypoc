@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-gray-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Vulnerability Disclosure</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body class="h-full">
+    <div class="min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+        <div class="sm:mx-auto sm:w-full sm:max-w-md">
+            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                Security Vulnerability Report
+            </h2>
+            <p class="mt-2 text-center text-sm text-gray-600">
+                Please provide detailed information about the security issue
+            </p>
+        </div>
+
+        <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-xl">
+            <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+                <form id="bugReportForm" class="space-y-6">
+                    <!-- Bug Name -->
+                    <div>
+                        <label for="bugName" class="block text-sm font-medium text-gray-700">
+                            Bug Name *
+                        </label>
+                        <div class="mt-1">
+                            <input type="text" id="bugName" name="bugName" required
+                                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        </div>
+                    </div>
+
+                    <!-- Vulnerability Type -->
+                    <div>
+                        <label for="vulnerabilityType" class="block text-sm font-medium text-gray-700">
+                            Type of Vulnerability *
+                        </label>
+                        <div class="mt-1">
+                            <select id="vulnerabilityType" name="vulnerabilityType" required
+                                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <option value="">Select type...</option>
+                                <option value="XSS">Cross-Site Scripting (XSS)</option>
+                                <option value="CSRF">Cross-Site Request Forgery (CSRF)</option>
+                                <option value="SQLi">SQL Injection</option>
+                                <option value="RCE">Remote Code Execution</option>
+                                <option value="AuthBypass">Authentication Bypass</option>
+                                <option value="IDOR">Insecure Direct Object Reference</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Severity -->
+                    <div>
+                        <label for="severity" class="block text-sm font-medium text-gray-700">
+                            Severity *
+                        </label>
+                        <div class="mt-1">
+                            <select id="severity" name="severity" required
+                                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <option value="">Select severity...</option>
+                                <option value="Critical">Critical</option>
+                                <option value="High">High</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Low">Low</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Affected Endpoints -->
+                    <div>
+                        <label for="endpoints" class="block text-sm font-medium text-gray-700">
+                            Affected Endpoint(s) *
+                        </label>
+                        <div class="mt-1">
+                            <input type="text" id="endpoints" name="endpoints" required
+                                placeholder="e.g., https://example.com/api/users"
+                                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        </div>
+                    </div>
+
+                    <!-- Steps to Reproduce -->
+                    <div>
+                        <label for="steps" class="block text-sm font-medium text-gray-700">
+                            Steps to Reproduce *
+                        </label>
+                        <div class="mt-1">
+                            <textarea id="steps" name="steps" rows="4" required
+                                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Additional Details -->
+                    <div>
+                        <label for="details" class="block text-sm font-medium text-gray-700">
+                            Additional Details
+                        </label>
+                        <div class="mt-1">
+                            <textarea id="details" name="details" rows="4"
+                                placeholder="Any screenshots, logs, or additional context"
+                                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="space-y-4">
+                        <div>
+                            <label for="reporterName" class="block text-sm font-medium text-gray-700">
+                                Your Name
+                            </label>
+                            <div class="mt-1">
+                                <input type="text" id="reporterName" name="reporterName"
+                                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="reporterEmail" class="block text-sm font-medium text-gray-700">
+                                Your Email
+                            </label>
+                            <div class="mt-1">
+                                <input type="email" id="reporterEmail" name="reporterEmail"
+                                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- reCAPTCHA -->
+                    <div class="g-recaptcha" data-sitekey="YOUR_RECAPTCHA_SITE_KEY"></div>
+
+                    <!-- Submit Button -->
+                    <div>
+                        <button type="submit"
+                            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Submit Report
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('bugReportForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            try {
+                const response = await fetch('YOUR_API_GATEWAY_ENDPOINT', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Submission failed');
+                }
+
+                const result = await response.json();
+                alert('Thank you! Your security report has been submitted successfully.');
+                e.target.reset();
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Sorry, there was an error submitting your report. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html> 

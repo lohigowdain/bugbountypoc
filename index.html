@@ -5,7 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bug Hunters - Security Vulnerability Report</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://www.google.com/recaptcha/api.js?render=6LcwUaoqAAAAAKripfytin08sXbLKHz0PpjzjoKN"></script>
+    <script>
+        window.recaptchaLoaded = false;
+        window.onRecaptchaError = function() {
+            console.error('reCAPTCHA failed to load');
+            document.getElementById('loadingIndicator').innerHTML = 
+                '<div class="text-red-600">reCAPTCHA failed to load. Please check your internet connection.</div>';
+        };
+    </script>
+    <script src="https://www.google.com/recaptcha/api.js?render=6LfSaKoqAAAAAPBwrzOqoXWzih0b1hUT2z_j48Hr" 
+            onload="window.recaptchaLoaded = true;" 
+            onerror="window.onRecaptchaError()">
+    </script>
 </head>
 <body class="bg-gray-100">
     <div class="container mx-auto px-4 py-8">
@@ -17,13 +28,25 @@
     </div>
 
     <script>
-        const RECAPTCHA_SITE_KEY = '6LcwUaoqAAAAAKripfytin08sXbLKHz0PpjzjoKN';
+        const RECAPTCHA_SITE_KEY = '6LfSaKoqAAAAAPBwrzOqoXWzih0b1hUT2z_j48Hr';
         const API_ENDPOINT = 'https://r81g4et74f.execute-api.us-east-1.amazonaws.com/prod/bug-report';
+
+        async function waitForRecaptcha(timeout = 5000) {
+            const start = Date.now();
+            while (!window.recaptchaLoaded && Date.now() - start < timeout) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+            if (!window.recaptchaLoaded) {
+                throw new Error('reCAPTCHA failed to load');
+            }
+        }
 
         async function loadBugReportForm() {
             const loadingIndicator = document.getElementById('loadingIndicator');
             try {
                 loadingIndicator.style.display = 'block';
+                
+                await waitForRecaptcha();
                 
                 await new Promise(resolve => grecaptcha.ready(resolve));
                 const token = await grecaptcha.execute(RECAPTCHA_SITE_KEY, {action: 'load_form'});
@@ -88,7 +111,7 @@
                 loadingIndicator.style.display = 'none';
                 document.getElementById('securityBugReport').innerHTML = 
                     `<div class="text-red-600 text-center">
-                        Failed to load form: ${error.message}
+                        ${error.message}. Please refresh the page to try again.
                     </div>`;
             }
         }
